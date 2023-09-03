@@ -1,0 +1,357 @@
+Excel Assignment - 21
+
+1. Write a VBA code to enter your name in A1 Cell using Input Box and
+once you enter the name display a message box that says the name
+has been entered.
+
+Sol: VBA code to enter your name in cell A1 using an Input Box and display a message box once the name has been entered:-
+
+Eg - Sub EnterName()
+    Dim userName As String
+    
+    ' Prompt the user to enter their name using an Input Box
+    userName = InputBox("Please enter your name:", "Name Entry")
+    
+    ' Check if the user entered a name or canceled the input
+    If userName <> "" Then
+        ' Enter the name in cell A1
+        Range("A1").Value = userName
+        
+        ' Display a message box with a confirmation message
+        MsgBox "Name '" & userName & "' has been entered in cell A1.", vbInformation, "Name Entered"
+    Else
+        ' Display a message if the user canceled the input
+        MsgBox "No name entered. Cell A1 remains unchanged.", vbExclamation, "Name Entry Canceled"
+    End If
+End Sub
+
+1. Press ALT + F11 to open the Visual Basic for Applications (VBA) editor in Excel.
+2. In the VBA editor, click "Insert" and then choose "Module" to insert a new module.
+3. Copy and paste the above code into the module.
+4. Close the VBA editor.
+5. To run the code, you can press ALT + F8 to open the "Macro" dialog, select "EnterName," and click "Run."
+
+When you run the macro, it will prompt you to enter your name. After entering your name, it will display a message box confirming that the name has been entered in cell A1. If you cancel the input, it will display a different message indicating that no name has been entered.
+
+
+2. What are Userforms? Why are they used? How to fill a list box using
+for loop.
+
+Sol: UserForms are a feature in Microsoft Excel (as well as other Office applications like Word and PowerPoint) that allow you to create custom dialog boxes or forms with various controls (e.g., text boxes, buttons, combo boxes, list boxes) for user interaction.
+
+UserForms are used:-
+
+a) Customized User Interfaces: UserForms allow you to design and create custom user interfaces tailored to your specific needs, making your VBA applications more user-friendly.
+
+b) Data Entry and Validation: They provide a structured way to collect and validate user input, ensuring data accuracy and consistency.
+
+c) Interactive Controls: UserForms support various types of controls (e.g., text boxes, combo boxes, list boxes, buttons) that allow users to interact with the form in different ways.
+
+d) Improved User Experience: They enhance the overall user experience by providing a more organized and intuitive interface for performing tasks or data entry.
+
+
+
+3. What is an array? Write a VBA code to enter students and their marks
+from the below table.
+
+Sol: An array is a data structure in computer programming that allows you to store and organize multiple values of the same data type under a single variable name. Arrays are particularly useful when you need to work with a collection of related data elements. In VBA (Visual Basic for Applications), you can create arrays to store data such as numbers, text, or objects.
+
+|   Student   |   Marks   |
+|-------------|-----------|
+|   Student1  |     90    |
+|   Student2  |     85    |
+|   Student3  |     92    |
+|   Student4  |     88    |
+
+
+Eg - Sub ReadTableDataToArray()
+    Dim ws As Worksheet
+    Dim studentData() As Variant
+    Dim lastRow As Long
+    Dim i As Long
+
+    ' Set the worksheet where your data is located
+    Set ws = ThisWorkbook.Sheets("Sheet1") ' Replace "Sheet1" with your sheet name
+
+    ' Find the last row with data in the table (assuming data starts in row 2)
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+
+    ' Resize the array based on the number of rows and 2 columns (Student and Marks)
+    ReDim studentData(1 To lastRow - 1, 1 To 2)
+
+    ' Loop through the table and populate the array
+    For i = 2 To lastRow
+        studentData(i - 1, 1) = ws.Cells(i, 1).Value ' Student name
+        studentData(i - 1, 2) = ws.Cells(i, 2).Value ' Marks
+    Next i
+
+    ' Now, you have the data in the "studentData" array
+    ' You can work with this data as needed
+
+    ' For example, you can print the data to the Immediate window
+    For i = LBound(studentData, 1) To UBound(studentData, 1)
+        Debug.Print "Student: " & studentData(i, 1) & ", Marks: " & studentData(i, 2)
+    Next i
+End Sub
+
+
+
+This code reads the data from the table starting from row 2 (assuming headers are in row 1) and stores it in the studentData array. You can then perform various operations on this array, such as printing the data to the Immediate window as shown in the example.
+
+
+
+4. Use the following data to create a pie chart using VBA code. Use Font
+- ‘Times new Roman’, Size -14, Bold, Title - Piechart’ and you are per
+to use colours as per your taste.
+
+
+Sol: VBA code to create a pie chart using the provided data with specific font and formatting preferences:-
+
+Eg - Sub CreatePieChart()
+    Dim ws As Worksheet
+    Dim chartObject As ChartObject
+    Dim chartDataRange As Range
+    Dim chartTitle As String
+    Dim i As Long
+    
+    ' Set the worksheet where you want to create the chart
+    Set ws = ThisWorkbook.Sheets("Sheet1") ' Replace "Sheet1" with your sheet name
+    
+    ' Set the data range for the chart
+    Set chartDataRange = ws.Range("A1:B5") ' Assuming your data is in columns A and B
+    
+    ' Set the chart title
+    chartTitle = "Pie Chart"
+    
+    ' Create a new chart object
+    Set chartObject = ws.ChartObjects.Add(Left:=100, Width:=375, Top:=75, Height:=225)
+    
+    ' Set chart title properties
+    chartObject.Chart.HasTitle = True
+    chartObject.Chart.ChartTitle.Text = chartTitle
+    chartObject.Chart.ChartTitle.Font.Name = "Times New Roman"
+    chartObject.Chart.ChartTitle.Font.Size = 14
+    chartObject.Chart.ChartTitle.Font.Bold = True
+    
+    ' Create the pie chart
+    chartObject.Chart.ChartType = xlPie
+    chartObject.Chart.SetSourceData chartDataRange
+    
+    ' Specify the chart colors
+    chartObject.Chart.SeriesCollection(1).Points(1).Format.Fill.ForeColor.RGB = RGB(255, 0, 0) ' Red
+    chartObject.Chart.SeriesCollection(1).Points(2).Format.Fill.ForeColor.RGB = RGB(0, 255, 0) ' Green
+    chartObject.Chart.SeriesCollection(1).Points(3).Format.Fill.ForeColor.RGB = RGB(0, 0, 255) ' Blue
+    chartObject.Chart.SeriesCollection(1).Points(4).Format.Fill.ForeColor.RGB = RGB(255, 255, 0) ' Yellow
+    chartObject.Chart.SeriesCollection(1).Points(5).Format.Fill.ForeColor.RGB = RGB(128, 0, 128) ' Purple
+    
+    ' Show the chart
+    chartObject.Chart.HasLegend = True
+    chartObject.Chart.Legend.Font.Name = "Times New Roman"
+    chartObject.Chart.Legend.Font.Size = 14
+    
+    ' Adjust chart position and size
+    chartObject.Top = 75
+    chartObject.Left = 100
+    chartObject.Width = 375
+    chartObject.Height = 225
+End Sub
+
+
+Make sure to replace "Sheet1" with the name of the worksheet where your data is located.
+Ensure that your data is in columns A and B, with the labels in column A and the corresponding values in column B.
+
+
+
+5. Check the dataset in the link given below and create a pivot table using
+VBA showing the sales for the year from stationary category.
+https://docs.google.com/spreadsheets/d/1IRSEnmgz8Ro276-
+
+Sol: Assuming your dataset is in a worksheet named "SalesData" and it has columns like "Category," "Year," and "Sales," and you want to create a PivotTable showing sales for the year from the "Stationary" category, you can use the following VBA code:-
+
+Eg - Sub CreatePivotTable()
+    Dim ws As Worksheet
+    Dim pt As PivotTable
+    Dim ptField As PivotField
+    Dim ptCache As PivotCache
+    Dim ptRange As Range
+    
+    ' Define the worksheet where your data is located
+    Set ws = ThisWorkbook.Sheets("SalesData") ' Replace "SalesData" with your sheet name
+    
+    ' Define the data range for the PivotTable
+    Set ptRange = ws.Range("A1:C" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row)
+    
+    ' Create a PivotCache from the data range
+    Set ptCache = ThisWorkbook.PivotCaches.Create(xlDatabase, ptRange)
+    
+    ' Add a new worksheet for the PivotTable
+    Set pt = ptCache.CreatePivotTable(TableDestination:=ThisWorkbook.Sheets.Add.Cells(1, 1), TableName:="PivotTable1")
+    
+    ' Add "Category" to the Rows area
+    Set ptField = pt.PivotFields("Category")
+    ptField.Orientation = xlRowField
+    
+    ' Add "Year" to the Columns area
+    Set ptField = pt.PivotFields("Year")
+    ptField.Orientation = xlColumnField
+    
+    ' Add "Sales" to the Values area
+    Set ptField = pt.PivotFields("Sales")
+    ptField.Orientation = xlDataField
+    ptField.Function = xlSum ' Summarize as Sum
+    
+    ' Filter the "Category" field to show only "Stationary"
+    pt.PivotFields("Category").PivotFilters.Add Type:=xlCaptionEquals, Value1:="Stationary"
+    
+    ' Customize the PivotTable layout or formatting here
+    
+    ' Refresh the PivotTable
+
+
+We have our dataset in a worksheet named "SalesData."
+our data columns are named "Category," "Year," and "Sales."
+The "Stationary" category exists in the "Category" column.
+
+
+6. Write step by step procedure to protect your workbook using a
+password.
+
+Sol: Protecting a workbook with a password in Excel adds a layer of security to prevent unauthorized access to the workbook. Here's a step-by-step procedure to protect your Excel workbook using a password:-
+
+1. Open Your Excel Workbook:
+Open the Excel workbook that you want to protect with a password.
+
+2. Save Your Workbook:
+It's a good practice to save your workbook before applying any protection, especially if you haven't already saved it. Go to File > Save or press Ctrl + S to save your workbook.
+
+3. Protect the Workbook Structure:
+If you want to prevent others from modifying the structure of the workbook (e.g., inserting or deleting sheets, moving sheets), follow these steps:
+
+a. Go to Review tab on the Excel ribbon.
+b. Click on Protect Workbook.
+c. Choose Protect Structure and Windows.
+
+4. Set a Password for Workbook Structure:
+a. After selecting "Protect Structure and Windows," a "Protect Structure" dialog box will appear.
+b. Enter a password in the "Password to unprotect sheet" field. This is the password required to unprotect the workbook structure. Make sure to remember this password, or you may lock yourself out of your own workbook.
+c. You can also specify optional options like allowing users to insert/delete rows and columns.
+d. Click "OK" and confirm the password by re-entering it.
+
+5. Save Your Workbook Again:
+After setting the password, save your workbook once more to ensure that the protection is in place.
+
+6. Test the Protection:
+Close and reopen the workbook to test if the protection is working. When you try to perform any action that requires changing the workbook structure, Excel will prompt you for the password.
+
+7. Password Hint (Optional):
+If you want to provide a password hint that can help you remember the password but doesn't reveal it, you can do so during the password setup process. It's optional but can be helpful.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
